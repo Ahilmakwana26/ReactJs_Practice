@@ -1,0 +1,18 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body,html{
+  background-color: black;
+  color: white;
+}
+h1{
+  font-size: 40px;
+}
+button{
+  border-radius: 9px;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+}

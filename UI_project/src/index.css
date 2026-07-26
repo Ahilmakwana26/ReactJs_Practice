@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+@import "tailwindcss";
+
+
+/* @font-face {
+  font-family: Oswald;
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+} */
+@theme {
+  --font-display: "Archivo Black", sans-serif;
+}
+#Herosection{
+    background-image: url('./assets/images/img5.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.slider{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
