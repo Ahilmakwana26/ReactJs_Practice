@@ -13,3 +13,19 @@
                 index={index}
             />
             ));
+
+    4. added simple pagination with separete components 
+    5. now make more batter gallery project
+
+        for that need to work with scroll , call image api on scroll and append data into array 
+
+        scroll detection
+             
+        | Property                                | Meaning                              | Example  |
+| --------------------------------------- | ------------------------------------ | -------- |
+| `window.scrollY`                        | How far you've scrolled from the top | `1500px` |
+| `window.innerHeight`                    | Height of the visible browser window | `800px`  |
+| `document.documentElement.scrollHeight` | Total height of the entire page      | `3200px` |
+
+
+//[...[], ...[{ id: 1 }, { id: 2 }]]
