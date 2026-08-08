@@ -178,12 +178,10 @@ const Product = () => {
 
                 <div className="space-y-1">
                   <button onClick={()=>{
-                  navigate("/productsDetails/", {
-                    state: { prod }
-                  });
+                      navigate(`/productsDetails/${prod.id}`,{state:{product:prod}})
                   }} className="text-lg font-bold text-slate-800 transition-colors group-hover:text-blue-600">
                     {prod.title}
-                  </button>
+                  </button> 
                   <p className="text-xs text-slate-400 line-clamp-1">
                     Premium quality {prod.tag.toLowerCase()} for professionals.
                   </p>
