@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Plus, Calendar, Archive, Trash2, Sparkles } from 'lucide-react';
+import { NoteContextData } from '../context/NoteContext';
 
-const Sidebar = ({colors,note}) => {
-
+const Sidebar = () => {
+  const { noteColors,addNewNote,folderColors,addNewFolder } = useContext(NoteContextData);
   const [NoteTheme,ShowNoteTheme] = useState(false);
+  const [FolderTheme,ShowFolderTheme] = useState(false);
 
   const handleShowNoteTheme = () =>{
     ShowNoteTheme(!NoteTheme);
+  }
+  const handleShowFolderTheme = () =>{
+    ShowFolderTheme(!FolderTheme);
   }
 
   return (
@@ -25,16 +30,30 @@ const Sidebar = ({colors,note}) => {
                     <span>Add New {NoteTheme}</span>
             </button>
             <div className={`flex flex-col ml-1.5 gap-3 transition-all duration-300 ease-in-out origin-top ${NoteTheme ? 'opacity-100 max-h-[300px] scale-100' : 'opacity-0 max-h-0 scale-95 pointer-events-none overflow-hidden'}`}>
-            {colors.map((color)=>(
+            {noteColors.map((color)=>(
               <button
               key={color.id}
               className={`w-6 h-6 rounded-full ${color.value} cursor-pointer hover:scale-90 active:scale-90 shadow-sm transition-transform`}
-              onClick={()=>note(color.id)}
+              onClick={()=>addNewNote(color.id)}
               >
               </button>
             ))}
             </div>
-           
+            <button onClick={handleShowFolderTheme} className="cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition-colors">
+                    <Plus className="w-4 h-4 text-slate-400" />
+                    <span>Add New Folder</span>
+            </button>
+            <div className={`flex flex-col ml-1.5 gap-3 transition-all duration-300 ease-in-out origin-top ${FolderTheme ? 'opacity-100 max-h-[400]' : 'opacity-0 max-h-0 scale-95 pointer-events-none overflow-hidden' }`}>
+              {folderColors.map((color)=>(
+                <button
+                key={color.id}
+                className={`w-6 h-6 rounded-full ${color.cardBg} cursor-pointer hover:scale-90 active:scale-90 shadow-sm transition-transform` }
+                onClick={()=>addNewFolder(color.id)}
+                >
+                
+                </button>
+              ))}
+            </div>
           <a
             href="#calendar"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition-colors"

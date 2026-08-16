@@ -1,18 +1,48 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState ,useContext} from 'react'
 import { Ellipsis, FolderOpen, Pencil, Clock } from "lucide-react";
+import { NoteContextData } from '../context/NoteContext';
 
-
-const Notes = ({ note,setCurrentNote }) => {
-    
-    const updateNote = (title,id) => {
-        setCurrentNote(prev =>
+let timer;
+const Notes = () => {
+    const { Note, setNote, addNewNote } = useContext(NoteContextData);
+    const [editMode, setEditMode] = useState(false);
+    const updateNote = (field, value, id) => {
+        setNote(prev =>
             prev.map((note)=>
-            note.id === id ? {...note, title:title} : note)
+            note.id === id ? {...note, [field]: value} : note)
         )
     }
+    const myFunction = () => {
+    localStorage.setItem('notes', JSON.stringify(Note));
+        console.log('Data saved Successfully');
+    };
+   useEffect(function(){
+        //method 1 to call debounce
+        // debounce(()=>{
+        //     localStorage.setItem('notes',JSON.stringify(Note));
+        //     console.log('Data saved Successfully')
+        // },2000);
+
+        //method 2
+        debounce(myFunction,2000);
+   },[Note]);
+
+   //debounce
+   const debounce = (func,delay) =>{
+        clearTimeout(timer);
+        console.log('previous timer cenceled');
+        timer = setTimeout(() => {
+            func();
+        }, delay);
+   }
+    //get notes from local storage
+    let storedNotes = localStorage.getItem('notes');
     useEffect(function(){
-        console.log('user entering title of note...');
-    },[])
+        if(storedNotes){
+            setNote(JSON.parse(storedNotes));
+        }
+    }, []);//run on page load
+
     return (
         <div className='bg-white text-black rounded-lg shadow-md p-6'>
             <div className="title">
@@ -22,22 +52,28 @@ const Notes = ({ note,setCurrentNote }) => {
                     <button className="filter-btn active:border-b-2 active:border-blue-500 cursor-pointer ">This Week</button>
                     <button className="filter-btn active:border-b-2 active:border-blue-500 cursor-pointer">This Month</button>
                 </div>
-                <div className="folders w-full flex gap-5  mt-4">
+                <div className="folders grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5 mt-4">
                     {/* apply map on notes */}
                     {/* Note 1 */}
-                    {note.map((note) => (
+                    {Note.map((note) => (
                         <div
                             key={note.id}
-                            className={`folder w-62 p-5 rounded-2xl ${note.color} flex flex-col gap-2 h-80 cursor-pointer transition-all hover:shadow-sm`}>
+                            className={`folder w-full p-5 rounded-2xl ${note.color} flex flex-col gap-2 h-80 cursor-pointer transition-all hover:shadow-sm`}>
                             <div className="flex flex-col items-start justify-between w-full">
                                 <p className="date text-xs font-medium text-slate-400 mt-1">{note.date}</p>
                                 <div className="title action flex items-center justify-between gap-2 w-full border-b-2 border-b-slate-300 py-2">
-                                    <input className="folder-name w-70 outline-none text-slate-800 text-base leading-snug" onChange={(e) => {
+                                    <input className="folder-name flex-1 outline-none text-slate-800 text-base leading-snug bg-transparent" onChange={(e) => {
                                         let title = e.target.value;
-                                        updateNote(title,note.id)
-                                    }} value={note.title} />
-                                    <div className="action w-30">
-                                        <Pencil size={15} strokeWidth={2.5} />
+                                        updateNote("title",title,note.id)
+                                    }} value={note.title} readOnly={!editMode}/>
+                                    <div className="action shrink-0">
+                                        <button className="action-btn p-1 rounded-lg hover:bg-gray-200 transition-all"
+                                            onClick={()=>{
+                                                setEditMode(!editMode);
+                                            }}
+                                        >
+                                            <Pencil size={15} strokeWidth={2.5} />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +81,11 @@ const Notes = ({ note,setCurrentNote }) => {
                                 <textarea
                                     className="w-full min-h-[300px] resize-none bg-transparent border-none focus:outline-none [scrollbar-width:none]"
                                     name="note"
-                                    defaultValue="Write your note here."
+                                    value={note.description}
+                                    onChange={(e) => {
+                                        let description = e.target.value;
+                                        updateNote("description",description,note.id)
+                                    }}
                                 />
                             </div>
                             <div className="time flex items-center gap-2 mt-2">
@@ -56,7 +96,11 @@ const Notes = ({ note,setCurrentNote }) => {
                     ))}
 
                     {/* New Note */}
-                    <div className="folder w-50 bg-gray-100/60 hover:bg-gray-100 p-5 border-dashed border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center h-40 cursor-pointer transition-all hover:shadow-sm">
+                    <div 
+                    onClick ={
+                        () =>addNewNote(1)
+                    }
+                    className="folder w-50 bg-gray-100/60 hover:bg-gray-100 p-5 border-dashed border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center h-40 cursor-pointer transition-all hover:shadow-sm">
                         <div className="w-10 h-10 rounded-xl bg-gray-500/20 flex items-center justify-center text-gray-600">
                             <Pencil size={17} strokeWidth={2.5} />
                         </div>
