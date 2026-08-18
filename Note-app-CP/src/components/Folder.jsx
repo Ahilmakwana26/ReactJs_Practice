@@ -1,20 +1,20 @@
 import React, { useContext, useEffect } from 'react'
 import { Ellipsis, FolderOpen } from "lucide-react";
 import { NoteContextData } from '../context/NoteContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 let timer;
 const Folder = () => {
-  const { Folder, setFolder,updateFolder } = useContext(NoteContextData);
+  const { Folder, setFolder, updateFolder } = useContext(NoteContextData);
   let navigate = useNavigate();
- 
- 
+
+
   let storedFolder = JSON.parse(localStorage.getItem('folder'));
-  useEffect(function(){
+  useEffect(function () {
     if (storedFolder) {
       setFolder(storedFolder);
     }
-  },[])
+  }, [])
   return (
     <div className='bg-white text-black rounded-lg shadow-md p-6'>
       <div className="title">
@@ -28,17 +28,16 @@ const Folder = () => {
           {/* Folder 1 */}
           {Folder.length > 0 && Folder.map((folder) => (
 
-            <div key={folder.id}
-
-              className={`folder w-full ${folder?.folder?.cardBg}  ${folder?.folder?.cardHover} p-5 rounded-2xl flex flex-col justify-between h-40 cursor-pointer transition-all hover:shadow-sm`}>
+            <NavLink to={`/folder/${folder.id}`}
+              key={folder.id}
+              // className={`folder w-full ${folder?.folder?.cardBg} ${folder?.folder?.cardHover} p-5 rounded-2xl flex flex-col justify-between h-40 cursor-pointer transition-all hover:shadow-sm`}
+              className={({isActive}) => `folder w-full ${folder?.folder?.cardBg} ${isActive ? "ring-2 ring-blue-500" : ""} ${folder?.folder?.cardHover} p-5 rounded-2xl flex flex-col justify-between h-40 cursor-pointer transition-all hover:shadow-sm`}
+            >
               <div className="flex items-start justify-between w-full">
                 <div className={`w-10 h-10 rounded-xl ${folder?.folder?.iconBg} flex items-center justify-center ${folder?.folder?.iconColor}`}>
                   <FolderOpen size={22} />
                 </div>
                 <button
-                  onClick={() => {
-                    navigate(`/folder/${folder.id}`)
-                  }}
                   className={`text-slate-400 ${folder?.folder?.ellipsisHover} p-1 rounded-lg hover:bg-black/5 transition-colors`}>
                   <Ellipsis size={18} />
                 </button>
@@ -50,7 +49,7 @@ const Folder = () => {
                 }} value={folder.title} />
                 <p className="date text-xs font-medium text-slate-400 mt-1">12/12/2024</p>
               </div>
-            </div>
+            </NavLink>
           ))}
 
 
@@ -66,7 +65,7 @@ const Folder = () => {
 
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

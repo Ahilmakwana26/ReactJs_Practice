@@ -9,7 +9,7 @@ const Trash = () => {
     return (
         <div className='bg-white text-black rounded-lg shadow-md p-6'>
             <div className="title">
-                <h2 className="text-2xl font-bold text-red-600">Trash</h2>
+                <h2 className="text-2xl font-bold text-red-400">Trash</h2>
                 <p className="text-sm text-gray-500 mt-1">Notes here will be permanently deleted if you choose to do so.</p>
                 
                 <div className="folders grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5 mt-6">
