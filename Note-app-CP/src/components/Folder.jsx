@@ -5,31 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 
 let timer;
 const Folder = () => {
-  const { Folder, setFolder } = useContext(NoteContextData);
+  const { Folder, setFolder,updateFolder } = useContext(NoteContextData);
   let navigate = useNavigate();
-  const updateFolder = (title,id) => {
-      setFolder(prev => 
-        Folder.map((folder) => 
-          folder.id == id ? {...folder,title:title} : folder
-        )
-      )
-  }
-  const StoreFolderData = () =>{
-    localStorage.setItem('folder',JSON.stringify(Folder));
-     console.log('Folder saved Successfully');
-  }
-
-  const debounce = (func,delay) =>{
-    clearTimeout(timer);
-    timer = setTimeout(()=>{
-        func();
-    },delay);
-  }
-
-  useEffect(function(){
-    debounce(StoreFolderData,2000);
-  },[Folder]);
-
+ 
+ 
   let storedFolder = JSON.parse(localStorage.getItem('folder'));
   useEffect(function(){
     if (storedFolder) {

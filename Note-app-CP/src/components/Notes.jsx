@@ -4,57 +4,17 @@ import { NoteContextData } from '../context/NoteContext';
 
 let timer;
 const Notes = () => {
-    const { Note, setNote, addNewNote, Folder } = useContext(NoteContextData);
+    const { Note, setNote, addNewNote,updateNote,handleDelete, Folder } = useContext(NoteContextData);
     const [editingNoteId, setEditingNoteId] = useState(null);
     const [selectedFolderId, setSelectedFolderId] = useState("");
     const [activeMenuId, setActiveMenuId] = useState(null);
 
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure?")) {
-            // Note: The user requested only UI and the alert message for now.
-            setNote((prev) =>
-                prev.map((note) =>
-                    note.id === id ? { ...note, deleted_at: new Date().toISOString() } : note)
-            )
-            let thatnode = Note.find((note) => note.id == id);
-            console.log("Note mark as Deleted successfully", Note);
-
-        }
-    };
 
     useEffect(() => {
         if (Folder.length > 0 && !selectedFolderId) {
             setSelectedFolderId(Folder[0].id);
         }
     }, [Folder]);
-
-    const updateNote = (field, value, id) => {
-        setNote(prev =>
-            prev.map((note) =>
-                note.id === id ? { ...note, [field]: value } : note)
-        )
-    }
-    const myFunction = () => {
-        localStorage.setItem('notes', JSON.stringify(Note));
-        console.log('Data saved Successfully');
-    };
-    //debounce
-    const debounce = (func, delay) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            func();
-        }, delay);
-    }
-    useEffect(function () {
-        //method 1 to call debounce
-        // debounce(()=>{
-        //     localStorage.setItem('notes',JSON.stringify(Note));
-        //     console.log('Data saved Successfully')
-        // },2000);
-
-        //method 2
-        debounce(myFunction, 2000);
-    }, [Note]);
 
     //get notes from local storage
     let storedNotes = localStorage.getItem('notes');

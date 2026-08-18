@@ -1,9 +1,9 @@
 import React from 'react'
 import { createContext, useState } from 'react'
 import App from '../App.jsx'
+import { useEffect } from 'react';
 
-
-export  const NoteContextData = createContext();
+export const NoteContextData = createContext();
 const date = new Date(Date.now()).toLocaleDateString('en-us', {
     month: 'long',
     day: 'numeric',
@@ -73,11 +73,15 @@ const folderColors = [
         ellipsisHover: "hover:bg-purple-200/50"
     }
 ];
-
+let timer = 0;
 const NoteContext = () => {
 
+
     const [Note, setNote] = useState([]);
-    const [Folder,setFolder] = useState([]);
+    const [Folder, setFolder] = useState([]);
+    const [activeMenuId, setActiveMenuId] = useState(null);
+
+
     const addNewNote = (colorId, folderId) => {
         let data = noteColors.find((color) => color.id === colorId);
         setNote(prev => [...prev, {
@@ -87,24 +91,116 @@ const NoteContext = () => {
             color: data.value,
             date: date,
             folderId: folderId || (Folder.length > 0 ? Folder[0].id : null),
-            deleted_at:null
+            deleted_at: null
         }])
     }
-    const addNewFolder = (id) =>{
-        let folderdata = folderColors.find((color)=>color.id === id);
-        setFolder(prev=>[...prev,{
-            id : Date.now(),
-            title:'Enter Folder Name.',
-            folder:folderdata
+    //Update Note with Debounce
+    const updateNote = (field, value, id) => {
+        setNote(prev =>
+            prev.map((note) =>
+                note.id === id ? { ...note, [field]: value } : note)
+        )
+    }
+
+    const myFunction = () => {
+        localStorage.setItem('notes', JSON.stringify(Note));
+        console.log('Data saved Successfully');
+    };
+
+    const debounce = (func, delay) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func();
+        }, delay);
+    }
+
+    useEffect(function () {
+        //method 1 to call debounce
+        // debounce(()=>{
+        //     localStorage.setItem('notes',JSON.stringify(Note));
+        //     console.log('Data saved Successfully')
+        // },2000);
+
+        //method 2
+        debounce(myFunction, 2000);
+    }, [Note]);
+    //Soft Delete Note
+    const handleDelete = (id) => {
+        if (window.confirm("Are you sure?")) {
+            setNote((prev) =>
+                prev.map((note) =>
+                    note.id === id ? { ...note, deleted_at: new Date().toISOString() } : note)
+            )
+            console.log("Note mark as Deleted successfully");
+        }
+    };
+
+    const addNewFolder = (id) => {
+        let folderdata = folderColors.find((color) => color.id === id);
+        setFolder(prev => [...prev, {
+            id: Date.now(),
+            title: 'Enter Folder Name.',
+            folder: folderdata
         }]);
     }
 
+    //update folder with Debounce
+    const updateFolder = (title, id) => {
+        setFolder(prev =>
+            Folder.map((folder) =>
+                folder.id == id ? { ...folder, title: title } : folder
+            )
+        )
+    }
+    const StoreFolderData = () => {
+        localStorage.setItem('folder', JSON.stringify(Folder));
+        console.log('Folder saved Successfully');
+    }
+    useEffect(function () {
+        debounce(StoreFolderData, 2000);
+    }, [Folder]);
+
+    //Restore Note
+    const handleRestore = (id) => {
+        setNote(prev =>
+            prev.map(note =>
+                note.id === id ? { ...note, deleted_at: null } : note
+            )
+        );
+        setActiveMenuId(null);
+    };
+
+    //permanent Delete Note
+    const handlePermanentDelete = (id) => {
+        if (window.confirm("This will permanently delete the note. Are you sure?")) {
+            setNote(prev => prev.filter(note => note.id !== id));//we used filter method to remove the note from the array
+            setActiveMenuId(null);
+        }
+    };
+
     return (
-        <NoteContextData.Provider value={{ Note, setNote, addNewNote, noteColors, Folder,setFolder,addNewFolder,folderColors }}>
+        <NoteContextData.Provider value={{
+            Note,
+            setNote,
+            addNewNote, 
+            updateNote, 
+            handleDelete, 
+            noteColors, 
+            Folder, 
+            setFolder, 
+            addNewFolder, 
+            updateFolder, 
+            folderColors, 
+            handleRestore, 
+            handlePermanentDelete,
+            activeMenuId,
+            setActiveMenuId
+        }}>
             <App />
         </NoteContextData.Provider>
 
     )
 }
 
-export default NoteContext 
+export default NoteContext
+

@@ -1,6 +1,7 @@
 import React, { useState,useContext } from 'react';
 import { Plus, Calendar, Archive, Trash2, Sparkles } from 'lucide-react';
 import { NoteContextData } from '../context/NoteContext';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const { noteColors,addNewNote,folderColors,addNewFolder } = useContext(NoteContextData);
@@ -70,13 +71,13 @@ const Sidebar = () => {
             <span>Archive</span>
           </a>
 
-          <a
-            href="#trash"
+          <NavLink
+            to="/trash"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition-colors"
           >
             <Trash2 className="w-4 h-4 text-slate-400" />
             <span>Trash</span>
-          </a>
+          </NavLink>
         </nav>
       </div>
     </aside>
