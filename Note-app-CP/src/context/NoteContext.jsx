@@ -78,14 +78,16 @@ const NoteContext = () => {
 
     const [Note, setNote] = useState([]);
     const [Folder,setFolder] = useState([]);
-    const addNewNote = (id) => {
-        let data = noteColors.find((color) => color.id === id);
+    const addNewNote = (colorId, folderId) => {
+        let data = noteColors.find((color) => color.id === colorId);
         setNote(prev => [...prev, {
             id: Date.now(),
             title: 'Enter title...',
             description: 'Write your note here.',
             color: data.value,
-            date: date
+            date: date,
+            folderId: folderId || (Folder.length > 0 ? Folder[0].id : null),
+            deleted_at:null
         }])
     }
     const addNewFolder = (id) =>{
@@ -93,7 +95,7 @@ const NoteContext = () => {
         setFolder(prev=>[...prev,{
             id : Date.now(),
             title:'Enter Folder Name.',
-            Folder:folderdata
+            folder:folderdata
         }]);
     }
 
